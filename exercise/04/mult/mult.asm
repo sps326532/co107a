@@ -7,25 +7,38 @@
 // (R0, R1, R2 refer to RAM[0], RAM[1], and RAM[2], respectively.)
 
 // Put your code here.
-load Fill.hack,
-output-file FillAutomatic.out,
-compare-to FillAutomatic.cmp,
-output-list RAM[16384]%D2.6.2 RAM[17648]%D2.6.2 RAM[18349]%D2.6.2 RAM[19444]%D2.6.2 RAM[20771]%D2.6.2 RAM[21031]%D2.6.2 RAM[22596]%D2.6.2 RAM[23754]%D2.6.2 RAM[24575]%D2.6.2;
+// #include <stdio.h>
+// int main() 
+// {
+//     int R0 = 3;
+//     int R1 = 5;
+//    =>    int R2 = 0;
+// }
 
-set RAM[24576] 0,    // the keyboard is untouched
-repeat 1000000 {
-  ticktock;
-}
-output;              // test that the screen is white
+    @2
+    M=0     // R2 = 0
 
-set RAM[24576] 1,    // a keyboard key is pressed
-repeat 1000000 {
-  ticktock;
-}
-output;              // test that the screen is black
+    @i
+    M=0     // i=0
+    
+(LOOP)
+    @i
+    D=M     // D=i
+    @0
+    D=D-M   // D=i-R0
+    @END
+    D;JGE    // if i-R0 >= 0 goto END
 
-set RAM[24576] 0,    // they keyboard in untouched
-repeat 1000000 {
-  ticktock;
-}
-output;              // test that the screen is white
+    @1
+    D=M     // D=R1
+    @2
+    M=D+M   // R2=R2+R1
+
+    @i
+    M=M+1   // i=i+1
+
+    @LOOP
+    0;JMP   // Repeat
+(END)
+    @END
+    0;JMP
